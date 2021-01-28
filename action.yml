@@ -26,6 +26,10 @@ inputs:
   revision_suffix:
     description: "Optional revision suffix to use for a unique name"
 outputs:
+  deployment_id:
+    description: "ID of GitHub Deployment created"
+  url:
+    description: "URL of the Cloud Run service or (revision, if revision_tag is provided)"
 runs:
   using: "node12"
   main: "dist/index.js"

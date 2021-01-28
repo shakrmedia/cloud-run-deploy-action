@@ -10,6 +10,8 @@ async function run(): Promise<void> {
     const octokit = github.getOctokit(token);
 
     const deployment = await createDeployment(octokit);
+    core.setOutput('deployment_id', deployment.data.id);
+
     let url: string;
 
     try {
@@ -21,6 +23,8 @@ async function run(): Promise<void> {
     }
 
     await createDeploymentStatus(octokit, deployment.data.id, 'success', url);
+    core.setOutput('url', url);
+
   } catch (error) {
     core.setFailed(error.message)
   }
