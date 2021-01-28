@@ -9,8 +9,8 @@ async function run(): Promise<void> {
     const token = core.getInput('github_token')
     const octokit = github.getOctokit(token)
 
-    const deployment = await createDeployment(octokit)
-    core.setOutput('deployment_id', deployment.data.id)
+    const deploymentId = await createDeployment(octokit)
+    core.setOutput('deployment_id', deploymentId)
 
     let url: string
 
@@ -18,11 +18,11 @@ async function run(): Promise<void> {
       await updateCloudRunService()
       url = await getCloudRunUrl()
     } catch (error) {
-      await createDeploymentStatus(octokit, deployment.data.id, 'failure')
+      await createDeploymentStatus(octokit, deploymentId, 'failure')
       throw error
     }
 
-    await createDeploymentStatus(octokit, deployment.data.id, 'success', url)
+    await createDeploymentStatus(octokit, deploymentId, 'success', url)
     core.setOutput('url', url)
   } catch (error) {
     core.setFailed(error.message)

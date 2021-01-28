@@ -11,14 +11,18 @@ type DeploymentState =
   | 'pending'
   | 'success'
 
-export async function createDeployment(octokit: InstanceType<typeof GitHub>) {
-  return octokit.repos.createDeployment({
+export async function createDeployment(
+  octokit: InstanceType<typeof GitHub>
+): Promise<number> {
+  const response = await octokit.repos.createDeployment({
     ...github.context.repo,
     ref: core.getInput('ref'),
     required_contexts: [],
     environment: core.getInput('github_environment'),
     mediaType: {previews: ['ant-man']}
   })
+
+  return response.data.id
 }
 
 export async function createDeploymentStatus(
@@ -26,8 +30,8 @@ export async function createDeploymentStatus(
   deployment_id: number,
   state: DeploymentState,
   environment_url?: string
-) {
-  return octokit.repos.createDeploymentStatus({
+): Promise<void> {
+  await octokit.repos.createDeploymentStatus({
     ...github.context.repo,
     deployment_id,
     state,

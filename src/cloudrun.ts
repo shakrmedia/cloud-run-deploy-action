@@ -37,7 +37,7 @@ export async function updateCloudRunService(noTraffic = true): Promise<void> {
 
   const exitcode = await exec.exec('gcloud', ['beta', ...args])
   if (exitcode !== 0) {
-    throw 'Failed to update Cloud Run service'
+    throw new Error('Failed to update Cloud Run service')
   }
 }
 
@@ -62,7 +62,7 @@ export async function getCloudRunUrl(): Promise<string> {
   }
   const exitcode = await exec.exec('gcloud', ['beta', ...args], options)
   if (exitcode !== 0) {
-    throw 'Failed to get Cloud Run URL'
+    throw new Error('Failed to get Cloud Run URL')
   }
 
   const parsed = JSON.parse(stdout)
