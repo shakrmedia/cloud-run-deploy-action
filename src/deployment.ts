@@ -14,9 +14,11 @@ type DeploymentState =
 export async function createDeployment(
   octokit: InstanceType<typeof GitHub>
 ): Promise<number> {
+  const ref = process.env.GITHUB_HEAD_REF || github.context.ref
+
   const response = await octokit.repos.createDeployment({
     ...github.context.repo,
-    ref: core.getInput('ref'),
+    ref,
     required_contexts: [],
     environment: core.getInput('github_environment'),
     mediaType: {previews: ['ant-man']}

@@ -154,7 +154,8 @@ const core = __importStar(__webpack_require__(2186));
 const github = __importStar(__webpack_require__(5438));
 function createDeployment(octokit) {
     return __awaiter(this, void 0, void 0, function* () {
-        const response = yield octokit.repos.createDeployment(Object.assign(Object.assign({}, github.context.repo), { ref: core.getInput('ref'), required_contexts: [], environment: core.getInput('github_environment'), mediaType: { previews: ['ant-man'] } }));
+        const ref = process.env.GITHUB_HEAD_REF || github.context.ref;
+        const response = yield octokit.repos.createDeployment(Object.assign(Object.assign({}, github.context.repo), { ref, required_contexts: [], environment: core.getInput('github_environment'), mediaType: { previews: ['ant-man'] } }));
         return response.data.id;
     });
 }
