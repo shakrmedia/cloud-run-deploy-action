@@ -1,4 +1,5 @@
 import * as core from '@actions/core'
+import * as exec from '@actions/exec'
 import * as github from '@actions/github'
 import {GitHub} from '@actions/github/lib/utils'
 
@@ -15,6 +16,8 @@ export async function createDeployment(
   octokit: InstanceType<typeof GitHub>
 ): Promise<number> {
   const ref = process.env.GITHUB_HEAD_REF || github.context.ref
+
+  await exec.exec('gcloud --quiet components install beta')
 
   const response = await octokit.repos.createDeployment({
     ...github.context.repo,

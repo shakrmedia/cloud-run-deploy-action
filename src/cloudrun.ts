@@ -11,8 +11,6 @@ function cloudRunDefaultArgs(): string[] {
 }
 
 export async function updateCloudRunService(noTraffic = true): Promise<void> {
-  await exec.exec('gcloud components install beta')
-
   const args = [
     'run',
     'services',
