@@ -216,12 +216,18 @@ function run() {
         try {
             const token = core.getInput('github_token');
             const octokit = github.getOctokit(token);
+            core.startGroup('Create GitHub Deployment');
             const deploymentId = yield deployment_1.createDeployment(octokit);
             core.setOutput('deployment_id', deploymentId);
+            core.endGroup();
             let url;
             try {
+                core.startGroup('Update Cloud Run Service');
                 yield cloudrun_1.updateCloudRunService();
+                core.endGroup();
+                core.startGroup('Get Cloud Run URL');
                 url = yield cloudrun_1.getCloudRunUrl();
+                core.endGroup();
             }
             catch (error) {
                 yield deployment_1.createDeploymentStatus(octokit, deploymentId, 'failure');
