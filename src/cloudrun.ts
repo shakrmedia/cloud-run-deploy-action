@@ -13,7 +13,7 @@ function cloudRunDefaultArgs(): string[] {
 export async function updateCloudRunService(noTraffic = true): Promise<void> {
   await exec.exec('gcloud components install beta');
 
-  let args = [
+  const args = [
     'run', 'services', 'update',
     ...cloudRunDefaultArgs(),
     `--image=${core.getInput('image')}`
@@ -42,7 +42,7 @@ export async function updateCloudRunService(noTraffic = true): Promise<void> {
 type TrafficItem = { [x: string]: string } & { tag: string, url: string};
 
 export async function getCloudRunUrl(): Promise<string> {
-  let args = [
+  const args = [
     'run', 'services', 'describe',
     ...cloudRunDefaultArgs(),
     "--format=json"
@@ -57,7 +57,7 @@ export async function getCloudRunUrl(): Promise<string> {
     throw 'Failed to get Cloud Run URL';
   }
 
-  let parsed = JSON.parse(stdout);
+  const parsed = JSON.parse(stdout);
 
   // If revision tag is empty, return service default url
   // If revision tag is set, return revision tag url
