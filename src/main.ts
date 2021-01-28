@@ -1,30 +1,29 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 
-import {createDeployment, createDeploymentStatus} from './deployment';
-import {updateCloudRunService, getCloudRunUrl} from './cloudrun';
+import {createDeployment, createDeploymentStatus} from './deployment'
+import {updateCloudRunService, getCloudRunUrl} from './cloudrun'
 
 async function run(): Promise<void> {
   try {
-    const token = core.getInput('github_token');
-    const octokit = github.getOctokit(token);
+    const token = core.getInput('github_token')
+    const octokit = github.getOctokit(token)
 
-    const deployment = await createDeployment(octokit);
-    core.setOutput('deployment_id', deployment.data.id);
+    const deployment = await createDeployment(octokit)
+    core.setOutput('deployment_id', deployment.data.id)
 
-    let url: string;
+    let url: string
 
     try {
-      await updateCloudRunService();
-      url = await getCloudRunUrl();
+      await updateCloudRunService()
+      url = await getCloudRunUrl()
     } catch (error) {
-      await createDeploymentStatus(octokit, deployment.data.id, 'failure');
-      throw error;
+      await createDeploymentStatus(octokit, deployment.data.id, 'failure')
+      throw error
     }
 
-    await createDeploymentStatus(octokit, deployment.data.id, 'success', url);
-    core.setOutput('url', url);
-
+    await createDeploymentStatus(octokit, deployment.data.id, 'success', url)
+    core.setOutput('url', url)
   } catch (error) {
     core.setFailed(error.message)
   }

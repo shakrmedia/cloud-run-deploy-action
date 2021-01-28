@@ -7,65 +7,73 @@ function cloudRunDefaultArgs(): string[] {
     `--project=${core.getInput('project_id')}`,
     `--region=${core.getInput('region')}`,
     '--platform=managed'
-  ];
+  ]
 }
 
 export async function updateCloudRunService(noTraffic = true): Promise<void> {
-  await exec.exec('gcloud components install beta');
+  await exec.exec('gcloud components install beta')
 
   const args = [
-    'run', 'services', 'update',
+    'run',
+    'services',
+    'update',
     ...cloudRunDefaultArgs(),
     `--image=${core.getInput('image')}`
-  ];
+  ]
 
-  const revision_tag = core.getInput('revision_tag');
+  const revision_tag = core.getInput('revision_tag')
   if (revision_tag !== '') {
-    args.push(`--revision-tag=${revision_tag}`);
+    args.push(`--revision-tag=${revision_tag}`)
   }
 
-  const revision_suffix = core.getInput('revision_suffix');
+  const revision_suffix = core.getInput('revision_suffix')
   if (revision_suffix !== '') {
-    args.push(`--revision-suffix=${revision_suffix}`);
+    args.push(`--revision-suffix=${revision_suffix}`)
   }
 
   if (noTraffic === true) {
-    args.push('--no-traffic');
+    args.push('--no-traffic')
   }
 
-  const exitcode = await exec.exec('gcloud', ['beta', ...args]);
+  const exitcode = await exec.exec('gcloud', ['beta', ...args])
   if (exitcode !== 0) {
-    throw 'Failed to update Cloud Run service';
+    throw 'Failed to update Cloud Run service'
   }
 }
 
-type TrafficItem = { [x: string]: string } & { tag: string, url: string};
+type TrafficItem = {[x: string]: string} & {tag: string; url: string}
 
 export async function getCloudRunUrl(): Promise<string> {
   const args = [
-    'run', 'services', 'describe',
+    'run',
+    'services',
+    'describe',
     ...cloudRunDefaultArgs(),
-    "--format=json"
-  ];
+    '--format=json'
+  ]
 
-  let stdout = '';
+  let stdout = ''
   const options = {
-    listeners: { stdout: (data: Buffer) => { stdout += data.toString(); } }
-  };
-  const exitcode = await exec.exec('gcloud', ['beta', ...args], options);
+    listeners: {
+      stdout: (data: Buffer) => {
+        stdout += data.toString()
+      }
+    }
+  }
+  const exitcode = await exec.exec('gcloud', ['beta', ...args], options)
   if (exitcode !== 0) {
-    throw 'Failed to get Cloud Run URL';
+    throw 'Failed to get Cloud Run URL'
   }
 
-  const parsed = JSON.parse(stdout);
+  const parsed = JSON.parse(stdout)
 
   // If revision tag is empty, return service default url
   // If revision tag is set, return revision tag url
-  const revision_tag = core.getInput('revision_tag');
+  const revision_tag = core.getInput('revision_tag')
   if (revision_tag === '') {
-    return parsed.status.url;
+    return parsed.status.url
   } else {
-    const trafficItems = parsed.status.traffic as TrafficItem[]; 
-    return trafficItems.find(item => item.tag === revision_tag)?.url || '';
+    const trafficItems = parsed.status.traffic as TrafficItem[]
+    return trafficItems.find(item => item.tag === revision_tag)?.url || ''
   }
 }
