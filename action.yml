@@ -1,11 +1,31 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: "Deploy to Cloud Run"
+description: "Deploy a container image to Google Cloud Run"
+author: "Shakr Media Co., Ltd."
 inputs:
-  milliseconds: # change this
+  github_token:
+    description: "GitHub token to make API request (use github.token)"
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+  github_environment:
+    description: "Name of the GitHub environment"
+    required: true
+  service_name:
+    description: "Name of the already existing Cloud Run service"
+    required: true
+  project_id:
+    description: "Google Cloud Platform project id"
+    required: true
+  region:
+    description: "Google Cloud region where Cloud Run service is located"
+    required: true
+    default: "us-central1"
+  image:
+    description: "Full url of container image to be deployed"
+    required: true
+  revision_tag:
+    description: "Optional revision tag to create url"
+  revision_suffix:
+    description: "Optional revision suffix to use for a unique name"
+outputs:
 runs:
-  using: 'node12'
-  main: 'dist/index.js'
+  using: "node12"
+  main: "dist/index.js"
