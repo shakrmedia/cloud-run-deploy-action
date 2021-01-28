@@ -58,7 +58,7 @@ function updateCloudRunService(noTraffic = true) {
         ];
         const revision_tag = core.getInput('revision_tag');
         if (revision_tag !== '') {
-            args.push(`--revision-tag=${revision_tag}`);
+            args.push(`--tag=${revision_tag}`);
         }
         const revision_suffix = core.getInput('revision_suffix');
         if (revision_suffix !== '') {
