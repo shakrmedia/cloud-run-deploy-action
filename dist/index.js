@@ -67,7 +67,7 @@ function updateCloudRunService(noTraffic = true) {
         if (noTraffic === true) {
             args.push('--no-traffic');
         }
-        const exitcode = yield exec.exec('gcloud', ['beta', ...args]);
+        const exitcode = yield exec.exec('gcloud', args);
         if (exitcode !== 0) {
             throw new Error('Failed to update Cloud Run service');
         }
@@ -92,7 +92,7 @@ function getCloudRunUrl() {
                 }
             }
         };
-        const exitcode = yield exec.exec('gcloud', ['beta', ...args], options);
+        const exitcode = yield exec.exec('gcloud', args, options);
         if (exitcode !== 0) {
             throw new Error('Failed to get Cloud Run URL');
         }
@@ -150,12 +150,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createDeploymentStatus = exports.createDeployment = void 0;
 const core = __importStar(__webpack_require__(2186));
-const exec = __importStar(__webpack_require__(1514));
 const github = __importStar(__webpack_require__(5438));
 function createDeployment(octokit) {
     return __awaiter(this, void 0, void 0, function* () {
         const ref = process.env.GITHUB_HEAD_REF || github.context.ref;
-        yield exec.exec('gcloud --quiet components install beta');
         const response = yield octokit.repos.createDeployment(Object.assign(Object.assign({}, github.context.repo), { ref, required_contexts: [], environment: core.getInput('github_environment'), mediaType: { previews: ['ant-man'] } }));
         return response.data.id;
     });
